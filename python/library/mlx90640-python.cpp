@@ -119,3 +119,38 @@ float * get_frame(void){
 
 	return mlx90640To;
 }
+
+//extern "C"
+float get_Ta(void){
+	int retries = 6;
+	int subpage;
+	bool subpages[2] = {0,0};
+
+	retries=10;
+
+	while (retries-- && (!subpages[0] || !subpages[1])){
+#ifdef DEBUG
+		printf("Retries: %d \n", retries);
+#endif
+		//auto start = std::chrono::system_clock::now();
+
+		MLX90640_GetFrameData(mlxAddress, frame);
+#ifdef DEBUG
+		printf("Got data for page %d\n", MLX90640_GetSubPageNumber(frame));
+#endif
+		subpage = MLX90640_GetSubPageNumber(frame);
+
+		subpages[subpage] = 1;
+
+#ifdef DEBUG
+		printf("Converting data for page %d\n", subpage);
+#endif
+
+		eTa = MLX90640_GetTa(frame, &mlx90640);
+	}
+#ifdef DEBUG
+	printf("Finishing\n");
+#endif
+
+	return eTa;
+}

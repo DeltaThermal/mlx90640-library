@@ -5,6 +5,7 @@
 int setup(int address, int fps);
 void cleanup(void);
 float * get_frame(void);
+float get_Ta(void);
 %}
 
 %typemap(out) float *get_frame %{
@@ -17,3 +18,4 @@ float * get_frame(void);
 int setup(int address, int fps);
 void cleanup(void);
 float * get_frame(void);
+float get_Ta(void);

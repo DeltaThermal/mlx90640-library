@@ -4,6 +4,24 @@ This Python wrapper of the Melexis MLX90640 library was written for use with the
 
 ** Warning: ** We have reason to believe that using this library in conjunction with a Jetson Nano could damage your device, please see: https://github.com/pimoroni/mlx90640-library/issues/38
 
+## Quick instalation
+
+```
+make clean
+make I2C_MODE=LINUX
+```
+
+then go to python/library
+
+```
+cd python/library
+```
+and install python library
+```
+make PYTHON=/usr/bin/python build
+sudo make PYTHON=/usr/bin/python install
+```
+
 ## Raspberry Pi Users
 
 ** EXPERIMENTAL **
