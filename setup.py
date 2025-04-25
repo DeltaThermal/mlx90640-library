@@ -23,10 +23,10 @@ ext_modules = [
 ]
 
 setup(
-    name="mlx90640",
+    name="mlx90640-library",
     version="0.1.0",
-    author="Your Name",
-    author_email="you@example.com",
+    author="Wesley Newman",
+    author_email="chickens4wes@gmail.com",
     description="Python bindings for the MLX90640 thermal sensor",
     long_description=open("README.md").read() if os.path.exists("README.md") else "",
     long_description_content_type="text/markdown",
