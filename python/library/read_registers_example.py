@@ -7,9 +7,22 @@ This example uses register addresses from register_layout.csv.
 import sys
 import csv
 import os
+import json
+from datetime import datetime
 sys.path.insert(0, "./build/lib.linux-armv7l-2.7")
 
 import MLX90640 as mlx
+
+# Function to get Raspberry Pi serial number
+def get_pi_serial():
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            for line in f:
+                if line.startswith('Serial'):
+                    return line.split(':')[1].strip()
+    except:
+        pass
+    return "unknown"
 
 # Load register definitions from CSV
 register_map = {}
@@ -28,12 +41,20 @@ mlx.setup(16)  # 16 FPS
 
 print("\nReading registers from MLX90640 (using register_layout.csv):")
 
+# Dictionary to store register data for JSON output
+register_data = {}
+
 # Read all EEPROM registers defined in CSV
 print("\nEEPROM Registers:")
 for addr, name in sorted(register_map.items()):
     reg_value = mlx.read_registers(addr, 1)
     if reg_value:
         print(f"   0x{addr:04X} ({name}): 0x{reg_value[0]:04X}")
+        # Store in dictionary with hex format
+        register_data[f"0x{addr:04X}"] = {
+            'name': name,
+            'value': reg_value[0]
+        }
     else:
         print(f"   0x{addr:04X} ({name}): Read failed")
 
@@ -50,6 +71,18 @@ if eeprom_data:
         if addr in register_map:
             name = register_map[addr]
             print(f"   0x{addr:04X} ({name}): 0x{val:04X}")
+
+# Get Raspberry Pi serial number
+pi_serial = get_pi_serial()
+
+# Save register data to JSON file
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+json_filename = f"mlx90640_registers_{pi_serial}_{timestamp}.json"
+
+with open(json_filename, 'w') as f:
+    json.dump(register_data, f, indent=2)
+
+print(f"\nRegister data saved to: {json_filename}")
 
 # Cleanup
 mlx.cleanup()
