@@ -118,3 +118,23 @@ float * get_frame(void){
 
 	return mlx90640To;
 }
+
+//extern "C"
+uint16_t * read_registers(uint16_t start_address, uint16_t num_registers){
+	static uint16_t reg_data[832]; // Max size based on EEPROM size
+	
+	if (num_registers > 832) {
+		num_registers = 832;
+	}
+	
+	int status = MLX90640_I2CRead(MLX_I2C_ADDR, start_address, num_registers, reg_data);
+	
+	if (status != 0) {
+#ifdef DEBUG
+		printf("Failed to read registers. Error code: %d\n", status);
+#endif
+		return NULL;
+	}
+	
+	return reg_data;
+}
